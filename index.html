@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main>
+    <div class="table-content">
+        <table>
+            <thead id="table-en-tete">
+            <tr id="table-header">
+                <th></th>
+                <th>Équipe</th>
+                <th>Points</th>
+                <th>Joués</th>
+                <th>Gagnés</th>
+                <th>Égalités</th>
+                <th>Perdus</th>
+                <th>Marqués</th>
+                <th>Reçus</th>
+                <th>Diff.</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</main>
+</body>
+<script>
+
+    async function getData() {
+        //Récupération des données
+        const response = await fetch("https://swiss-tchoukball.netlify.app/.netlify/functions/simple-standings?competition=league-a");
+        return data = await response.json();
+    }
+
+    (function main() {
+        'use strict';
+
+        //Récupération des données
+        let data = [];
+        getData().then(responseData => {
+            data = responseData;
+
+            //Création des lignes du tableau pour chaque équipe
+            let lastElement = document.getElementById("table-en-tete");
+            let index = 1;
+            for (let team of data) {
+                const lineRanking = document.createElement("tr");
+                lineRanking.innerHTML = `
+            <td>${index}</td>
+            <td>${team['name']}</td>
+            <td>${team['points']}</td>
+            <td>${team['played']}</td>
+            <td>${team['won']}</td>
+            <td>${team['draw']}</td>
+            <td>${team['lost']}</td>
+            <td>${team['scored']}</td>
+            <td>${team['received']}</td>
+            <td>${team['difference']}</td>
+            `
+
+                if (team['name'] === "Delémont Blizzard") {
+                    lineRanking.style.backgroundColor = "rgba(189,212,241,0.46)";
+                }
+                //Ajout de l'élément au tableau
+                lastElement.before(lastElement, lineRanking);
+                lastElement = lineRanking;
+                index++;
+            }
+        });
+    }());
+</script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+    div.table-content {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-family: 'Open Sans', sans-serif;
+        margin: auto;
+        white-space: nowrap;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    * {
+        font-family: "Open Sans", sans-serif;
+    }
+
+    th {
+        background-color: #044c77;
+        color: white;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+
+    tr td:nth-child(2),
+    tr th:nth-child(2) {
+        text-align: left;
+    }
+
+    tr td:nth-child(3) {
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr, td {
+        min-width: fit-content;
+    }
+</style>
+</html>
+
